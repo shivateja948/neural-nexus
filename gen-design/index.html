@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen Design Studio | Industrial AI</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body { padding: 40px; text-align: center; }
+        .design-studio { max-width: 800px; margin: 40px auto; background: #111; padding: 3rem; border-radius: 32px; border: 1px solid #333; }
+        input { width: 100%; padding: 1.5rem; border-radius: 20px; background: #222; color: #fff; border: 1px solid #444; font-size: 1.1rem; }
+        .gallery { margin-top: 40px; border-radius: 16px; min-height: 300px; background: #050505; border: 1px dashed #444; overflow: hidden; }
+        img { width: 100%; border-radius: 16px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="design-studio">
+        <h1 class="title-reveal">Generative Design Studio</h1>
+        <p class="subtitle">Autonomous Prototyping Engine</p>
+        <input type="text" id="prompt-input" placeholder="Generate high-load industrial pivot joint...">
+        <button onclick="gen()" class="neon-button">GENERATE CAD</button>
+        <div id="gallery" class="gallery"></div>
+        <a href="../index.html" style="margin-top:20px; display:inline-block; color:#6e00ff;">← Dashboard</a>
+    </div>
+
+    <script>
+        const promptInput = document.getElementById('prompt-input');
+        const gallery = document.getElementById('gallery');
+        function gen() {
+            if(!promptInput.value) return;
+            gallery.innerHTML = '<div style="margin-top:140px; color:#666;">Diffusing Neural Blueprints...</div>';
+            setTimeout(() => {
+                const keyword = promptInput.value.toLowerCase().includes('joint') ? 'mechanical' : 'industrial';
+                gallery.innerHTML = `<img src="https://source.unsplash.com/featured/?${keyword},blueprint">`;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

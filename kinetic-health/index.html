@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinetic Health | AI Physio</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+    <style>
+        body { padding: 40px; text-align: center; }
+        #posecam { width: 100%; max-width: 640px; border-radius: 20px; border: 2px solid #ff9d00; }
+        .dashboard-link { margin-top: 20px; display: inline-block; color: #ff9d00; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1 class="title-reveal">Kinetic Health Monitor</h1>
+    <p class="subtitle">AI-driven joint angle and posture tracking.</p>
+    
+    <div style="position: relative; margin-top: 40px;">
+        <video id="posecam" autoplay muted playsinline></video>
+        <canvas id="pose-canvas" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%);"></canvas>
+    </div>
+
+    <a href="../index.html" class="dashboard-link">← Return to Neural Nexus Hub</a>
+
+    <script>
+        let poseModel = null;
+        const video = document.getElementById('posecam');
+        const canvas = document.getElementById('pose-canvas');
+        const ctx = canvas.getContext('2d');
+
+        async function init() {
+            poseModel = await posenet.load();
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            video.onloadedmetadata = () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                detect();
+            };
+        }
+
+        async function detect() {
+            const pose = await poseModel.estimateSinglePose(video);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pose.keypoints.forEach(k => {
+                if (k.score > 0.5) {
+                    ctx.fillStyle = '#ff9d00'; ctx.beginPath(); ctx.arc(k.position.x, k.position.y, 6, 0, 2 * Math.PI); ctx.fill();
+                }
+            });
+            requestAnimationFrame(detect);
+        }
+        init();
+    </script>
+</body>
+</html>

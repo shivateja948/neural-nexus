@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Safety Monitor | AI Project 1</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <style>
+        body { padding: 40px; text-align: center; }
+        #webcam { width: 100%; max-width: 640px; border-radius: 20px; border: 2px solid #00d2ff; }
+        .dashboard-link { margin-top: 20px; display: inline-block; color: #00d2ff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1 class="title-reveal">Industrial Safety Monitor</h1>
+    <p class="subtitle">AI-driven PPE and hazard compliance monitoring.</p>
+    
+    <div style="position: relative; margin-top: 40px;">
+        <video id="webcam" autoplay muted playsinline></video>
+        <canvas id="vision-canvas" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%);"></canvas>
+    </div>
+
+    <a href="../index.html" class="dashboard-link">← Return to Neural Nexus Hub</a>
+
+    <script>
+        let model = null;
+        let stream = null;
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('vision-canvas');
+        const ctx = canvas.getContext('2d');
+
+        async function init() {
+            model = await cocoSsd.load();
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            video.onloadedmetadata = () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                detect();
+            };
+        }
+
+        async function detect() {
+            const predictions = await model.detect(video);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            predictions.forEach(p => {
+                const isPerson = p.class === 'person';
+                ctx.strokeStyle = isPerson ? '#00ff88' : '#00d2ff';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(...p.bbox);
+                ctx.fillStyle = isPerson ? '#00ff88' : '#00d2ff';
+                ctx.fillText(isPerson ? 'CERTIFIED PERSONNEL' : `ITEM: ${p.class.toUpperCase()}`, p.bbox[0], p.bbox[1] > 10 ? p.bbox[1] - 5 : 10);
+            });
+            requestAnimationFrame(detect);
+        }
+        init();
+    </script>
+</body>
+</html>

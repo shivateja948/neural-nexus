@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Perception AI | Sentiment</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body { padding: 40px; text-align: center; }
+        .mood-engine { max-width: 800px; margin: 40px auto; background: #111; padding: 3rem; border-radius: 32px; border: 1px solid #333; }
+        textarea { width: 100%; height: 200px; padding: 1.5rem; border-radius: 20px; background: #222; color: #fff; border: 1px solid #444; font-size: 1.1rem; }
+        #mood-status { font-size: 2rem; font-weight: 800; margin-top: 2rem; color: #00ff88; }
+        .dashboard-link { margin-top: 20px; display: inline-block; color: #00ff88; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="mood-engine">
+        <h1 class="title-reveal">Brand Perception Engine</h1>
+        <p class="subtitle">Social Metadata Semantic Clustering</p>
+        <textarea id="mood-input" placeholder="Paste social media data clusters for real-time analysis..."></textarea>
+        <div id="mood-status">NEUTRAL ANALYTICS</div>
+        <a href="../index.html" class="dashboard-link">← Return to Dashboard</a>
+    </div>
+
+    <script>
+        const input = document.getElementById('mood-input');
+        const status = document.getElementById('mood-status');
+        input.addEventListener('input', (e) => {
+            const text = e.target.value.toLowerCase();
+            const pos = ['good', 'love', 'great', 'best', 'happy', 'awesome'];
+            const neg = ['bad', 'sad', 'hate', 'worst', 'terrible', 'fail'];
+            let score = 0;
+            text.split(' ').forEach(w => {
+                if(pos.includes(w)) score++;
+                if(neg.includes(w)) score--;
+            });
+            status.innerText = score > 0 ? "POSITIVE PERCEPTION" : (score < 0 ? "NEGATIVE RISK" : "NEUTRAL ANALYTICS");
+            status.style.color = score > 0 ? "#00ff88" : (score < 0 ? "#ff4e50" : "#888");
+        });
+    </script>
+</body>
+</html>
