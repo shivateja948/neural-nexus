@@ -43,14 +43,21 @@ window.addEventListener('resize', initBackground);
 initBackground();
 animateBackground();
 
-// GSAP High-end reveal
+// GSAP High-end reveal with forced visibility
 gsap.from(".title-reveal", { duration: 1.5, y: 100, opacity: 0, ease: "power4.out" });
 gsap.from(".subtitle", { duration: 1.5, y: 50, opacity: 0, delay: 0.3, ease: "power4.out" });
 gsap.from(".project-card", { 
     duration: 1, 
     y: 50, 
     opacity: 0, 
-    stagger: 0.2, 
+    stagger: 0.1, 
     delay: 0.5, 
     ease: "back.out(1.7)" 
 });
+
+// Ensure everything is visible even if GSAP blocks
+setTimeout(() => {
+    document.querySelectorAll('.title-reveal, .subtitle, .project-card').forEach(el => {
+        el.style.opacity = '1';
+    });
+}, 3000);
